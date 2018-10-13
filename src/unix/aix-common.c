@@ -268,6 +268,13 @@ int uv_interface_addresses(uv_interface_address_t** addresses,
     else
       address->netmask.netmask4 = *((struct sockaddr_in*) &p->ifr_addr);
 
+    if (flg.ifr_flags & IFF_BROADCAST && p->ifr_broadaddr != NULL) {
+      if (!inet6)
+        address->broadcast.broadcast4 = *((struct sockaddr_in*) &p->ifr_broadaddr);
+    } else {
+      memset(&address->broadcast.broadcast6, 0, sizeof(struct sockaddr_in6));
+    }
+
     address->is_internal = flg.ifr_flags & IFF_LOOPBACK ? 1 : 0;
 
     address++;

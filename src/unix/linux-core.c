@@ -905,6 +905,14 @@ int uv_interface_addresses(uv_interface_address_t** addresses,
       address->netmask.netmask4 = *((struct sockaddr_in*) ent->ifa_netmask);
     }
 
+    if (ent->ifa_flags & IFF_BROADCAST && ent->ifa_broadaddr != NULL) {
+      if (ent->ifa_broadaddr->sa_family == AF_INET) {
+        address->broadcast.broadcast4 = *((struct sockaddr_in*) ent->ifa_broadaddr);
+      }
+    } else {
+      memset(&address->broadcast.broadcast6, 0, sizeof(struct sockaddr_in6));
+    }
+
     address->is_internal = !!(ent->ifa_flags & IFF_LOOPBACK);
 
     address++;

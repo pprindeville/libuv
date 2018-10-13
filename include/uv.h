@@ -1091,6 +1091,11 @@ struct uv_cpu_info_s {
   struct uv_cpu_times_s cpu_times;
 };
 
+/*
+ * IPv6 doesn't support broadcast but this is the closest thing
+ */
+#define IN6ADDR_ALLHOSTS_GROUP	{ { { 0xff,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } }
+
 struct uv_interface_address_s {
   char* name;
   char phys_addr[6];
@@ -1103,6 +1108,10 @@ struct uv_interface_address_s {
     struct sockaddr_in netmask4;
     struct sockaddr_in6 netmask6;
   } netmask;
+  union {
+    struct sockaddr_in broadcast4;
+    struct sockaddr_in6 broadcast6;
+  } broadcast;
 };
 
 struct uv_passwd_s {
